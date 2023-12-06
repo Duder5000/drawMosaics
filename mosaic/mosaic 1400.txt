@@ -9,7 +9,7 @@
 PImage myImg;
 PImage testImg;
 PImage smaller;
-PImage[] allImages, allImages2, allImages3;
+PImage[] allImages, allImages2;
 float[] brightness;
 PImage[] brightImages;
 
@@ -28,27 +28,27 @@ int scalerSteps = 5;
 
 int tileSize = 2; //5
 
-//void drawBrightness(){
-//  float offsetX = (width - w * scl * scaleFactor) / 2; 
-//  float offsetY = (height - h * scl * scaleFactor) / 2; 
+void drawBrightness(){
+  float offsetX = (width - w * scl * scaleFactor) / 2; 
+  float offsetY = (height - h * scl * scaleFactor) / 2; 
     
-//  smaller.loadPixels();
+  smaller.loadPixels();
   
-//  for (int x = 0; x < w; x++) {
-//    for (int y = 0; y < h; y++) {
-//      int index = x + y * w;
-//      color c = smaller.pixels[index];
-//      int imageIndex = int(brightness(c));
-//      //int colourImageIndex = findClosestColorIndex(c, colours);
+  for (int x = 0; x < w; x++) {
+    for (int y = 0; y < h; y++) {
+      int index = x + y * w;
+      color c = smaller.pixels[index];
+      int imageIndex = int(brightness(c));
+      //int colourImageIndex = findClosestColorIndex(c, colours);
       
-//      float xPos = offsetX + x * scl * scaleFactor;
-//      float yPos = offsetY + y * scl * scaleFactor;
+      float xPos = offsetX + x * scl * scaleFactor;
+      float yPos = offsetY + y * scl * scaleFactor;
       
-//      image(brightImages[imageIndex], xPos, yPos, scl * scaleFactor, scl * scaleFactor);
-//      //image(coloursImages[colourImageIndex], xPos, yPos, scl * scaleFactor, scl * scaleFactor);
-//    }
-//  }
-//}
+      //image(brightImages[imageIndex], xPos, yPos, scl * scaleFactor, scl * scaleFactor);
+      //image(coloursImages[colourImageIndex], xPos, yPos, scl * scaleFactor, scl * scaleFactor);
+    }
+  }
+}
 
 int findClosestColorIndex(color target, color[] colors) {
   float minDist = Float.MAX_VALUE;
@@ -82,7 +82,6 @@ void createMosaic(PImage targetImage) {
       color targetColor = targetImage.get(x, y);
       int imageIndex = int(brightness(targetColor));      
       PImage p = brightImages[imageIndex];
-      //PImage p = allImages2[imageIndex];
       p.resize(tileSize, tileSize);
       image(p, x, y);
       
@@ -125,15 +124,13 @@ void fileSelected(File selection) {
 void allowingMeToPauseSetupSortOf(){
   File[] files = listFiles(sketchPath("data/photos"));
   allImages = new PImage[imgsToUse];
+  //allImages2 = new PImage[imgsToUse];
   
   brightness = new float[allImages.length];
   brightImages = new PImage[256];
   
   colours = new color[allImages.length];
   coloursImages = new PImage[256];
-  
-  allImages2 = new PImage[256];
-  allImages3 = new PImage[256];
 
   for (int i = 0; i < allImages.length; i++) {
     String filename = files[i].toString();
@@ -141,7 +138,6 @@ void allowingMeToPauseSetupSortOf(){
     PImage img = loadImage(filename);
 
     allImages[i] = createImage(scl, scl, RGB);
-    allImages3[i] = createImage(128, 128, RGB);
     allImages[i].copy(img, 0, 0, img.width, img.height, 0, 0, scl, scl);
     allImages[i].loadPixels();
     //allImages[i] = img;
@@ -167,18 +163,12 @@ void allowingMeToPauseSetupSortOf(){
         record = diff;
         brightImages[i] = allImages[j];
         coloursImages[i] = allImages[j];
-        
-        allImages2[i] = allImages3[j];
-        println("i " + i + ", j " + j);
       }
     }
   }
 
   w = myImg.width/scl;
   h = myImg.height/scl;
-  
-  //w = myImg.width;
-  //h = myImg.height;
 
   smaller = createImage(w, h, RGB);
   smaller.copy(myImg, 0, 0, myImg.width, myImg.height, 0, 0, w, h);
@@ -214,17 +204,8 @@ color calculateAverageColor(PImage img) {
 
 void mouseWheel(MouseEvent event) {
   float delta = event.getCount();
-  scaleFactor -= delta * 0.1; // Increase the scaleFactor
+  scaleFactor -= delta * 0.1;
   scaleFactor = constrain(scaleFactor, 0.5, 5);
-  
-  redraw(); // Redraw the sketch to update the zoom level
-}
-
-void keyReleased() {
-  if (key == '+') {
-    tileSize += 1;
-    println("tileSize: " + tileSize);
-  }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,14 +223,23 @@ void setup() {
 void draw() {
   background(0);
   
-  if (!pauaseAll) {
-    if (setupComplete) {
-      pushMatrix(); // Save the current transformation matrix
-      scale(scaleFactor); // Scale the drawing based on the scaleFactor
+  //float x = width / 2 - testImg.width / 2;
+  //float y = height / 2 - testImg.height / 2;  
+  //image(testImg, x, y);
+  
+  if(!pauaseAll){
+    if(setupComplete){
+      scale(scaleFactor);
+      //drawBrightness();
       createMosaic(myImg);
-      popMatrix(); // Restore the saved transformation matrix
-    } else if (fileSelectedFlag) {
+    }else if(fileSelectedFlag){
       allowingMeToPauseSetupSortOf();
     }
   }
+  //else if(pauaseAll && setupComplete && fileSelectedFlag){
+  //  println("pauaseAll && setupComplete && fileSelectedFlag");
+  //  myImg = smallerImg(scaler, myImgOrignal);
+  //  myImg = stretchImage(myImg, width, height);
+  //  allowingMeToPauseSetupSortOf();
+  //}
 }
