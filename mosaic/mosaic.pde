@@ -230,7 +230,7 @@ void keyReleased() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void setup() {
-  size(600, 750);
+  //size(600, 750);
   size(600, 800);
   //imageMode(CENTER);
   selectInput("Select an image file:", "fileSelected");
