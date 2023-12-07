@@ -32,7 +32,6 @@ void startUp(){
   allImages = new PImage[imgsToUse];
   int imagesCount = allImages.length;
   
-  //doBrightness(f, imagesCount);
   doColours(f, imagesCount);
   
   w = targetImg.width/scl;
@@ -60,41 +59,6 @@ void doColours(File[] files, int len){
   } 
 }
 
-//void doBrightness(File[] files, int len){  
-//  brightness = new float[len];
-//  tilesBrightness = new PImage[256];
-  
-//  for (int i = 0; i < len; i++) {
-//    String filename = files[i].toString();
-//    PImage img = loadImage(filename);
-    
-
-//    allImages[i] = createImage(tileSize, tileSize, RGB);
-//    allImages[i].copy(img, 0, 0, img.width, img.height, 0, 0, tileSize, tileSize);
-//    allImages[i].loadPixels();
-    
-//    float avg = 0;
-//    for (int j = 0; j < allImages[i].pixels.length; j++) {
-//      float b =  brightness(allImages[i].pixels[j]);
-//      avg += b;
-//    }
-    
-//    avg /= allImages[i].pixels.length;
-//    brightness[i] = avg;
-//  }  
-  
-//  for (int i = 0; i < tilesBrightness.length; i++) {
-//    float record = 256;
-//    for (int j = 0; j < brightness.length; j++) {
-//      float diff = abs(i - brightness[j]);
-//      if (diff < record) {
-//        record = diff;
-//        tilesBrightness[i] = allImages[j];
-//      }
-//    }
-//  }
-//}
-
 void keepDoing(){  
   float offsetX = (width - w * scl * zoomMultiplier) / 2;
   float offsetY = (height - h * scl * zoomMultiplier) / 2;
@@ -113,8 +77,7 @@ void keepDoing(){
   for (int x = 0; x < w; x++) {
     for (int y = 0; y < h; y++) {
       int index = x + y * w;
-      color c = smaller.pixels[index];
-      //int imageIndex = int(brightness(c));      
+      color c = smaller.pixels[index];  
       
       int colourIndex = findClosestColorIndex(c, colours);
       PImage tileFromColour = allImages[colourIndex];
@@ -125,8 +88,7 @@ void keepDoing(){
       if(zoomMultiplier > 1){
      
       }
-      
-      //image(tilesBrightness[imageIndex], xPos, yPos, scale, scale);
+            
       image(tileFromColour, xPos, yPos, scale, scale);
     }
   }
@@ -167,7 +129,6 @@ int findClosestColorIndex(color target, color[] colors) {
       closestIndex = i;
     }
   }
-
   return closestIndex;
 }
 
