@@ -1,6 +1,8 @@
+//Stanford Dogs Image Dataset
+//http://vision.stanford.edu/aditya86/ImageNetDogs/
+
 //Globals
 PImage targetImg;
-PImage completeImg;
 
 PImage[] allImages;
 
@@ -12,14 +14,15 @@ float[] brightness;
 
 int tileSize = 64;
 float zoomMultiplier = 1.0;
-
 boolean foundFile = false;
 boolean startUpComplete = false;
 boolean mosaicSaved = false;
-boolean dragging = false;
 
 int imgsToUse = 200;
 String tilesPath = "data/photos";
+
+float lastClickedX = 0;
+float lastClickedY= 0;
 
 int w, h;
 PImage smaller;
@@ -40,7 +43,10 @@ void startUp(){
   
   smaller = createImage(w, h, RGB);
   smaller.copy(targetImg, 0, 0, targetImg.width, targetImg.height, 0, 0, w, h);
-    
+  
+  lastClickedX = width/2;
+  lastClickedY= height/2;
+  
   startUpComplete = true;
 }
 
@@ -60,52 +66,49 @@ void doColours(File[] files, int len){
   } 
 }
 
-//void doBrightness(File[] files, int len){  
-//  brightness = new float[len];
-//  tilesBrightness = new PImage[256];
+void doBrightness(File[] files, int len){  
+  brightness = new float[len];
+  tilesBrightness = new PImage[256];
   
-//  for (int i = 0; i < len; i++) {
-//    String filename = files[i].toString();
-//    PImage img = loadImage(filename);
+  for (int i = 0; i < len; i++) {
+    String filename = files[i].toString();
+    PImage img = loadImage(filename);
     
 
-//    allImages[i] = createImage(tileSize, tileSize, RGB);
-//    allImages[i].copy(img, 0, 0, img.width, img.height, 0, 0, tileSize, tileSize);
-//    allImages[i].loadPixels();
+    allImages[i] = createImage(tileSize, tileSize, RGB);
+    allImages[i].copy(img, 0, 0, img.width, img.height, 0, 0, tileSize, tileSize);
+    allImages[i].loadPixels();
     
-//    float avg = 0;
-//    for (int j = 0; j < allImages[i].pixels.length; j++) {
-//      float b =  brightness(allImages[i].pixels[j]);
-//      avg += b;
-//    }
+    float avg = 0;
+    for (int j = 0; j < allImages[i].pixels.length; j++) {
+      float b =  brightness(allImages[i].pixels[j]);
+      avg += b;
+    }
     
-//    avg /= allImages[i].pixels.length;
-//    brightness[i] = avg;
-//  }  
+    avg /= allImages[i].pixels.length;
+    brightness[i] = avg;
+  }  
   
-//  for (int i = 0; i < tilesBrightness.length; i++) {
-//    float record = 256;
-//    for (int j = 0; j < brightness.length; j++) {
-//      float diff = abs(i - brightness[j]);
-//      if (diff < record) {
-//        record = diff;
-//        tilesBrightness[i] = allImages[j];
-//      }
-//    }
-//  }
-//}
+  for (int i = 0; i < tilesBrightness.length; i++) {
+    float record = 256;
+    for (int j = 0; j < brightness.length; j++) {
+      float diff = abs(i - brightness[j]);
+      if (diff < record) {
+        record = diff;
+        tilesBrightness[i] = allImages[j];
+      }
+    }
+  }
+}
 
-void keepDoing(){  
-  float offsetX = (width - w * scl * zoomMultiplier) / 2;
+void keepDoing(){ 
+  float offsetX = (width - w * scl * zoomMultiplier) / 2; 
   float offsetY = (height - h * scl * zoomMultiplier) / 2;
   
-  if(zoomMultiplier > 1){
-     
+  if(zoomMultiplier > 1 && (mousePressed && mouseButton == LEFT)){
+    //Add code here
   }
   
-  println("mouseX: " + mouseX + ", mouseY: " + mouseY);
-  println("offsetX: " + offsetX + ", offsetY: " + offsetY);
-    
   float scale = scl * zoomMultiplier;
     
   smaller.loadPixels();
@@ -121,10 +124,6 @@ void keepDoing(){
       
       float xPos = offsetX + x * scale;
       float yPos = offsetY + y * scale;
-      
-      if(zoomMultiplier > 1){
-     
-      }
       
       //image(tilesBrightness[imageIndex], xPos, yPos, scale, scale);
       image(tileFromColour, xPos, yPos, scale, scale);
@@ -191,19 +190,12 @@ void mouseWheel(MouseEvent event) {
   float delta = event.getCount();
   zoomMultiplier -= delta * 0.5;
   zoomMultiplier = constrain(zoomMultiplier, 1, 100);
-  //println(zoomMultiplier);
+  println(zoomMultiplier);
 }
 
 void mouseReleased() {
-
-}
-
-void mousePressed(){
-
-}
-
-void mouseDragged(){
-
+  lastClickedX = mouseX;
+  lastClickedY = mouseY;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -222,7 +214,6 @@ void draw() {
     keepDoing();
     if(!mosaicSaved){
       save("canvas.png");
-      completeImg = loadImage("data/canvas.png");
       mosaicSaved = true;
     }
   }else if (foundFile && !startUpComplete){
