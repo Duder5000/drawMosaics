@@ -63,7 +63,6 @@ int findClosestColorIndex(color target, color[] colors) {
       closestIndex = i;
     }
   }
-
   return closestIndex;
 }
 
