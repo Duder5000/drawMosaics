@@ -95,14 +95,13 @@ void doBrightness(File[] files, int len){
 }
 
 void keepDoing(){
-  //float mouseXCenter = mouseX - width / 2;
-  //float mouseYCenter = mouseY - height / 2;  
+  //float mouseXCenter = lastClickedX - width / 2;
+  //float mouseYCenter = lastClickedY - height / 2;  
+  float mouseXCenter = 0;
+  float mouseYCenter = 0;
   
-  //float offsetX = mouseXCenter + (width - w * scl * zoomMultiplier) / 2; 
-  //float offsetY = mouseYCenter + (height - h * scl * zoomMultiplier) / 2;
-  
-  float offsetX = (width - w * scl * zoomMultiplier) / 2; 
-  float offsetY = (height - h * scl * zoomMultiplier) / 2;
+  float offsetX = mouseXCenter + (width - w * scl * zoomMultiplier) / 2; 
+  float offsetY = mouseYCenter + (height - h * scl * zoomMultiplier) / 2;
   
   float scale = scl * zoomMultiplier;
     
