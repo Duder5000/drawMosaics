@@ -1,3 +1,5 @@
+//Paper presentation Monday before noon
+
 //Globals
 PImage targetImg;
 
