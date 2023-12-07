@@ -1,6 +1,5 @@
 //Globals
 PImage targetImg;
-PImage completeImg;
 
 PImage[] allImages;
 
@@ -16,7 +15,7 @@ float zoomMultiplier = 1.0;
 boolean foundFile = false;
 boolean startUpComplete = false;
 boolean mosaicSaved = false;
-boolean dragging = false;
+boolean paused = false;
 
 int imgsToUse = 200;
 String tilesPath = "data/photos";
@@ -59,14 +58,7 @@ void doColours(File[] files, int len){
   } 
 }
 
-void keepDoing(){  
-  float offsetX = (width - w * scl * zoomMultiplier) / 2;
-  float offsetY = (height - h * scl * zoomMultiplier) / 2;
-  
-  if(zoomMultiplier > 1){
-     
-  }
-  
+void keepDoing(float offsetX, float offsetY){      
   println("mouseX: " + mouseX + ", mouseY: " + mouseY);
   println("offsetX: " + offsetX + ", offsetY: " + offsetY);
     
@@ -84,11 +76,7 @@ void keepDoing(){
       
       float xPos = offsetX + x * scale;
       float yPos = offsetY + y * scale;
-      
-      if(zoomMultiplier > 1){
-     
-      }
-            
+             
       image(tileFromColour, xPos, yPos, scale, scale);
     }
   }
@@ -152,7 +140,7 @@ void mouseWheel(MouseEvent event) {
   float delta = event.getCount();
   zoomMultiplier -= delta * 0.5;
   zoomMultiplier = constrain(zoomMultiplier, 1, 100);
-  //println(zoomMultiplier);
+  paused = false;
 }
 
 void mouseReleased() {
@@ -171,6 +159,7 @@ void mouseDragged(){
 
 void setup() {
   size(600, 800);
+  background(0);
   //selectInput("Select an image file:", "fileSelected");
   
   targetImg = loadImage("data/Snoopy01.jpg");
@@ -178,15 +167,26 @@ void setup() {
 }
 
 void draw() {
-  background(0);
-  if(startUpComplete){
-    keepDoing();
-    if(!mosaicSaved){
-      save("canvas.png");
-      completeImg = loadImage("data/canvas.png");
-      mosaicSaved = true;
+  if(!paused){
+    background(0);
+    if(startUpComplete){
+      float doOffsetX = (width - w * scl * zoomMultiplier) / 2;
+      float doOffsetY = (height - h * scl * zoomMultiplier) / 2;
+      
+      if(zoomMultiplier > 1 && !paused){
+        //doOffsetX -= mouseX/2;
+        //doOffsetY -= mouseY/2;
+        paused = true;
+      }
+  
+      keepDoing(doOffsetX, doOffsetY);
+      if(!mosaicSaved){
+        save("canvas.png");
+        mosaicSaved = true;
+        paused = true;
+      }
+    }else if (foundFile && !startUpComplete){
+      startUp(); 
     }
-  }else if (foundFile && !startUpComplete){
-    startUp(); 
   }
 }
