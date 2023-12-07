@@ -102,7 +102,7 @@ void keepDoing(){
   float offsetY = (height - h * scl * zoomMultiplier) / 2;
   
   if(zoomMultiplier > 1 && (mousePressed && mouseButton == LEFT)){
-    //Add code here
+    //Chat GPT add code here
   }
   
   float scale = scl * zoomMultiplier;

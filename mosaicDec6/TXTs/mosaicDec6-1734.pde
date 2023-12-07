@@ -40,9 +40,6 @@ void startUp(){
   smaller = createImage(w, h, RGB);
   smaller.copy(targetImg, 0, 0, targetImg.width, targetImg.height, 0, 0, w, h);
   
-  lastClickedX = width/2;
-  lastClickedY= height/2;
-  
   startUpComplete = true;
 }
 
@@ -97,13 +94,15 @@ void doBrightness(File[] files, int len){
   }
 }
 
-void keepDoing(){ 
+void keepDoing(){
+  //float mouseXCenter = mouseX - width / 2;
+  //float mouseYCenter = mouseY - height / 2;  
+  
+  //float offsetX = mouseXCenter + (width - w * scl * zoomMultiplier) / 2; 
+  //float offsetY = mouseYCenter + (height - h * scl * zoomMultiplier) / 2;
+  
   float offsetX = (width - w * scl * zoomMultiplier) / 2; 
   float offsetY = (height - h * scl * zoomMultiplier) / 2;
-  
-  if(zoomMultiplier > 1 && (mousePressed && mouseButton == LEFT)){
-    //Add code here
-  }
   
   float scale = scl * zoomMultiplier;
     
@@ -184,9 +183,8 @@ void fileSelected(File selection) {
 
 void mouseWheel(MouseEvent event) {
   float delta = event.getCount();
-  zoomMultiplier -= delta * 0.5;
   zoomMultiplier = constrain(zoomMultiplier, 1, 100);
-  println(zoomMultiplier);
+  zoomMultiplier -= delta * 0.5;
 }
 
 void mouseReleased() {
