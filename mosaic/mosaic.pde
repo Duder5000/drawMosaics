@@ -2,12 +2,9 @@
 PImage targetImg;
 
 PImage[] allImages;
-
 PImage[] tilesColours;
-PImage[] tilesBrightness;
 
 color[] colours;
-float[] brightness;
 
 int tileSize = 64;
 float zoomMultiplier = 1.0;
@@ -26,6 +23,7 @@ int scl = 3;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//Stuff that runs after a file is selected, moved out of setup because setup wouldn't wait for a file to be selected & would cause error
 void startUp(){  
   File[] f = listFiles(sketchPath(tilesPath));
   allImages = new PImage[imgsToUse];
@@ -42,6 +40,7 @@ void startUp(){
   startUpComplete = true;
 }
 
+//Find the average colour of all the tile images & store the value in colours[] for later
 void doColours(File[] files, int len){
   colours = new color[len];
   tilesColours = new PImage[len];
@@ -58,6 +57,7 @@ void doColours(File[] files, int len){
   } 
 }
 
+//My main draw loop broken out so that it can be easily paused
 void keepDoing(float offsetX, float offsetY){      
   println("mouseX: " + mouseX + ", mouseY: " + mouseY);
   println("offsetX: " + offsetX + ", offsetY: " + offsetY);
@@ -66,6 +66,7 @@ void keepDoing(float offsetX, float offsetY){
     
   smaller.loadPixels();
   
+  //Drawing the tile images at their locations based on the closed average image colour from colours[]
   for (int x = 0; x < w; x++) {
     for (int y = 0; y < h; y++) {
       int index = x + y * w;
@@ -82,6 +83,7 @@ void keepDoing(float offsetX, float offsetY){
   }
 }
 
+//Finds the average colours of an image, used for the tiles
 color calcAvgColour(PImage img) {
   img.loadPixels();
   float r = 0;
@@ -106,6 +108,7 @@ color calcAvgColour(PImage img) {
   return color(r, g, b);
 }
 
+//Uses euclideanDistance to find which tile has the best fit colour for the pixel(s)
 int findClosestColorIndex(color target, color[] colors) {
   float minDist = Float.MAX_VALUE;
   int closestIndex = 0;
@@ -120,6 +123,7 @@ int findClosestColorIndex(color target, color[] colors) {
   return closestIndex;
 }
 
+//Math to figure out how far away a colour is from another
 float euclideanDistance(color c1, color c2) {
   float dr = red(c1) - red(c2);
   float dg = green(c1) - green(c2);
@@ -127,6 +131,7 @@ float euclideanDistance(color c1, color c2) {
   return sqrt(dr * dr + dg * dg + db * db);
 }
 
+//Grabs a file from the file browser
 void fileSelected(File selection) {
   if (selection == null) {
     println("Window closed");
@@ -136,6 +141,7 @@ void fileSelected(File selection) {
   }
 }
 
+//Even triggered when scrolling, used for zooming
 void mouseWheel(MouseEvent event) {
   float delta = event.getCount();
   zoomMultiplier -= delta * 0.5;
