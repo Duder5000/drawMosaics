@@ -59,10 +59,13 @@ void doColours(File[] files, int len){
 
 //My main draw loop broken out so that it can be easily paused
 void keepDoing(float offsetX, float offsetY){      
-  println("mouseX: " + mouseX + ", mouseY: " + mouseY);
-  println("offsetX: " + offsetX + ", offsetY: " + offsetY);
-    
-  float scale = scl * zoomMultiplier;
+  //offsetX = 0;
+  //offsetY = 0;
+  
+  //println("mouseX: " + mouseX + ", mouseY: " + mouseY);
+  //println("offsetX: " + offsetX + ", offsetY: " + offsetY);
+  
+  float scale = scl * zoomMultiplier; //Combaining tile scale & zoom
     
   smaller.loadPixels();
   
@@ -149,27 +152,15 @@ void mouseWheel(MouseEvent event) {
   paused = false;
 }
 
-void mouseReleased() {
-
-}
-
-void mousePressed(){
-
-}
-
-void mouseDragged(){
-
-}
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void setup() {
   size(600, 800);
   background(0);
-  //selectInput("Select an image file:", "fileSelected");
+  selectInput("Select an image file:", "fileSelected");
   
-  targetImg = loadImage("data/Snoopy01.jpg");
-  foundFile = true;
+  //targetImg = loadImage("data/Snoopy01.jpg");
+  //foundFile = true;
 }
 
 void draw() {
@@ -187,7 +178,7 @@ void draw() {
   
       keepDoing(offsetX, offsetY);
       if(!mosaicSaved){
-        save("canvas.png");
+        save("mosaic.png");
         mosaicSaved = true;
         paused = true;
       }
