@@ -170,16 +170,16 @@ void draw() {
   if(!paused){
     background(0);
     if(startUpComplete){
-      float doOffsetX = (width - w * scl * zoomMultiplier) / 2;
-      float doOffsetY = (height - h * scl * zoomMultiplier) / 2;
+      float offsetX = (width - w * scl * zoomMultiplier) / 2;
+      float offsetY = (height - h * scl * zoomMultiplier) / 2;
       
       if(zoomMultiplier > 1 && !paused){
-        //doOffsetX -= mouseX/2;
-        //doOffsetY -= mouseY/2;
+        //offsetX -= mouseX/2;
+        //offsetY -= mouseY/2;
         paused = true;
       }
   
-      keepDoing(doOffsetX, doOffsetY);
+      keepDoing(offsetX, offsetY);
       if(!mosaicSaved){
         save("canvas.png");
         mosaicSaved = true;
